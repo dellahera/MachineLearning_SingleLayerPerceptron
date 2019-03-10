@@ -4,6 +4,7 @@ import numpy as np
 from functools import reduce
 idx = ['sepalLength','sepalWidth','petalLength','petalWidth','name', 'code']
 df= pd.read_csv('Iris.csv',names=idx)
+df = df[:100]
 df.head()
 df = df.assign(code=0.0, weigth1=0.0, weigth2=0.0, weigth3=0.0, weigth4=0.0, bias=0.0, result=0.0, activation = 0.0, prediction = 0.0, error=0.0, dweigth1 = 0.0,dweigth2=0.0, dweigth3=0.0, dweigth4=0.0, dbias=0.0)
 #Sign code of class
@@ -74,7 +75,6 @@ plot_error = np.zeros((5,300))
 plot_accuracy = np.zeros((5,300))
 plot_errorV = np.zeros((5,300))
 plot_accuracyV = np.zeros((5,300))
-
 for i in range (5):
     for j in range (300):
         for k in range (80):
@@ -121,11 +121,11 @@ for i in range (5):
             elif k>0:
                 weigth= [train[i]['weigth1'][k],train[i]['weigth2'][k],train[i]['weigth3'][k],train[i]['weigth4'][k]]
 
-                train[i]['weigth1'][k]= newWeigth(train[i]['weigth1'][k-1],train[i]['dweigth1'][k-1],0.1)
-                train[i]['weigth2'][k]= newWeigth(train[i]['weigth2'][k-1],train[i]['dweigth2'][k-1],0.1)
-                train[i]['weigth3'][k]= newWeigth(train[i]['weigth3'][k-1],train[i]['dweigth3'][k-1],0.1)
-                train[i]['weigth4'][k]= newWeigth(train[i]['weigth4'][k-1],train[i]['dweigth4'][k-1],0.1)
-                train[i]['bias'][k]=newBias(train[i]['bias'][k-1],train[i]['dbias'][k-1],0.1)
+                train[i]['weigth1'][k]= newWeigth(train[i]['weigth1'][k-1],train[i]['dweigth1'][k-1],0.8)
+                train[i]['weigth2'][k]= newWeigth(train[i]['weigth2'][k-1],train[i]['dweigth2'][k-1],0.8)
+                train[i]['weigth3'][k]= newWeigth(train[i]['weigth3'][k-1],train[i]['dweigth3'][k-1],0.8)
+                train[i]['weigth4'][k]= newWeigth(train[i]['weigth4'][k-1],train[i]['dweigth4'][k-1],0.8)
+                train[i]['bias'][k]=newBias(train[i]['bias'][k-1],train[i]['dbias'][k-1],0.8)
                 
                 train[i]['result'][k]=total(inp,weigth,1,training1['bias'][k])
                 train[i]['activation'][k]=activation(training1['result'][k])
@@ -141,7 +141,7 @@ for i in range (5):
         plot_accuracy[i][j]= accuration(train[i]['prediction'], train[i]['code'])
         for l in range(20):
             Inp = validasi[i].loc[l,"sepalLength":"petalWidth"]
-            Weigth= [train[j]['weigth1'][k],train[j]['weigth2'][k],train[j]['weigth3'][k],train[j]['weigth4'][k]]
+            Weigth= train[i].loc[l,"weigth1": "weigth4"]
 
             validasi[j]['weigth1'][l]= Weigth[0]
             validasi[j]['weigth2'][l]= Weigth[1]
@@ -158,10 +158,12 @@ for i in range (5):
 import matplotlib.pyplot as plt
 plt.plot(plot_accuracy)
 plt.plot(plot_accuracyV)
+plt.ylabel('Error')
 plt.show()
 
 #Grafik loss function
 import matplotlib.pyplot as pltE
 pltE.plot(plot_error)
 pltE.plot(plot_errorV)
+pltE.ylabel('Error')
 pltE.show()
